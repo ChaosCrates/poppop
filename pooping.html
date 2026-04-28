@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>The Great Porcelain Aim</title>
+    <style>
+        body { background: #222; color: white; text-align: center; font-family: sans-serif; overflow: hidden; }
+        canvas { background: #eee; border: 5px solid #555; display: block; margin: 10px auto; cursor: crosshair; }
+        #ui { font-size: 20px; font-weight: bold; }
+        .mom-yell { color: #ff4444; font-size: 24px; font-style: italic; min-height: 30px; }
+    </style>
+</head>
+<body>
+    <h1>The Great Porcelain Aim</h1>
+    <p>Based on a True Story.</p>
+    <div id="ui">Level: <span id="lvl">1</span> | Score: <span id="score">0</span></div>
+    <div id="mom-box" class="mom-yell"></div>
+    <canvas id="gameCanvas" width="800" height="400"></canvas>
+    <p>Hold **Left Click** to charge power, Release to fire!</p>
+
+<script>
+const canvas = document.getElementById('gameCanvas');
+const ctx = canvas.getContext('2d');
+const momBox = document.getElementById('mom-box');
+
+// Game State
+let level = 1;
+let score = 0;
+let isCharging = false;
+let charge = 0;
+let projectile = null;
+const gravity = 0.25;
+
+// Assets (Simple positions)
+const player = { x: 100, y: 350 };
+const toilet = { x: 600, y: 350, width: 80, height: 50 };
+
+const momQuotes = [
+    "I JUST MOPPED THAT!",
+    "GET THE BLEACH!",
+    "ARE YOU AN ANIMAL?!",
+    "THAT'S IT, YOU'RE GROUNDED!",
+    "WHO RAISED YOU?!"
+];
+
+function resetProjectile() {
+    projectile = null;
+    charge = 0;
+}
+
+function checkCollision() {
+    if (!projectile) return;
+
+    // Check if hit the toilet bowl
+    if (projectile.y >= toilet.y && 
+        projectile.x > toilet.x && 
+        projectile.x < toilet.x + toilet.width) {
+        
+        score += 100;
+        level++;
+        document.getElementById('score').innerText = score;
+        document.getElementById('lvl').innerText = level;
+        momBox.innerText = "Nice shot... for once.";
+        
+        // Make it harder: move the toilet or shrink it
+        toilet.x = 400 + Math.random() * 300;
+        toilet.width = Math.max(30, 80 - (level * 5)); 
+        resetProjectile();
+    } 
+    // Check if hit the floor (Miss)
+    else if (projectile.y > canvas.height) {
+        momBox.innerText = "MOM: " + momQuotes[Math.floor(Math.random() * momQuotes.length)];
+        resetProjectile();
+    }
+}
+
+function update() {
+    if (isCharging) {
+        charge = Math.min(charge + 0.2, 15); // Power cap
+    }
+
+    if (projectile) {
+        projectile.x += projectile.vx;
+        projectile.y += projectile.vy;
+        projectile.vy += gravity;
+        checkCollision();
+    }
+
+    draw();
+    requestAnimationFrame(update);
+}
+
+function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    // Draw Floor
+    ctx.fillStyle = "#999";
+    ctx.fillRect(0, 380, canvas.width, 20);
+
+    // Draw Toilet (Target)
+    ctx.fillStyle = "white";
+    ctx.fillRect(toilet.x, toilet.y, toilet.width, toilet.height);
+    ctx.fillStyle = "#add8e6"; // Water
+    ctx.fillRect(toilet.x + 5, toilet.y + 5, toilet.width - 10, 10);
+
+    // Draw Player (The Source)
+    ctx.fillStyle = "#8b4513";
+    ctx.fillRect(player.x - 10, player.y - 10, 20, 20);
+
+    // Draw Projectile
+    if (projectile) {
+        ctx.beginPath();
+        ctx.arc(projectile.x, projectile.y, 8, 0, Math.PI * 2);
+        ctx.fillStyle = "#5c3317";
+        ctx.fill();
+        ctx.closePath();
+    }
+
+    // Draw Power Bar
+    if (isCharging) {
+        ctx.fillStyle = "red";
+        ctx.fillRect(player.x - 20, player.y - 40, charge * 5, 10);
+    }
+}
+
+// Controls
+window.addEventListener('mousedown', () => { if (!projectile) isCharging = true; });
+window.addEventListener('mouseup', () => {
+    if (isCharging) {
+        isCharging = false;
+        projectile = {
+            x: player.x,
+            y: player.y,
+            vx: charge * 1.5,
+            vy: -charge * 1.2
+        };
+    }
+});
+
+update();
+</script>
+</body>
+</html>
