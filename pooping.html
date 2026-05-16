@@ -1,142 +1,273 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>The Great Porcelain Aim</title>
-    <style>
-        body { background: #222; color: white; text-align: center; font-family: sans-serif; overflow: hidden; }
-        canvas { background: #eee; border: 5px solid #555; display: block; margin: 10px auto; cursor: crosshair; }
-        #ui { font-size: 20px; font-weight: bold; }
-        .mom-yell { color: #ff4444; font-size: 24px; font-style: italic; min-height: 30px; }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SupaSuprise • Mystery Loot Boxes</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" rel="stylesheet">
+  <style>
+    body {
+      background: linear-gradient(135deg, #1a0033, #330066);
+      font-family: 'Segoe UI', sans-serif;
+    }
+    .glow {
+      text-shadow: 0 0 20px rgb(168 85 247), 0 0 40px rgb(168 85 247);
+    }
+    .box-card {
+      transition: all 0.4s;
+    }
+    .box-card:hover {
+      transform: scale(1.08) rotate(2deg);
+      box-shadow: 0 0 40px rgba(168, 85, 247, 0.8);
+    }
+    .neon-border {
+      border: 3px solid #a855f7;
+      box-shadow: 0 0 25px #c026d3;
+    }
+  </style>
 </head>
-<body>
-    <h1>The Great Porcelain Aim</h1>
-    <p>Based on a True Story.</p>
-    <div id="ui">Level: <span id="lvl">1</span> | Score: <span id="score">0</span></div>
-    <div id="mom-box" class="mom-yell"></div>
-    <canvas id="gameCanvas" width="800" height="400"></canvas>
-    <p>Hold **Left Click** to charge power, Release to fire!</p>
+<body class="text-white min-h-screen">
 
-<script>
-const canvas = document.getElementById('gameCanvas');
-const ctx = canvas.getContext('2d');
-const momBox = document.getElementById('mom-box');
+  <!-- Hero -->
+  <header class="text-center py-16 px-6">
+    <h1 class="text-6xl font-bold mb-4 glow">SUPASUPRISE</h1>
+    <p class="text-2xl text-purple-300">Epic Mystery Loot Boxes for Kids</p>
+    <p class="mt-4 text-xl">Custom • Surprise • Guaranteed Rare Options</p>
+  </header>
 
-// Game State
-let level = 1;
-let score = 0;
-let isCharging = false;
-let charge = 0;
-let projectile = null;
-const gravity = 0.25;
+  <!-- Boxes Section -->
+  <section class="max-w-6xl mx-auto px-6 py-12">
+    <h2 class="text-4xl font-bold text-center mb-12 glow">Choose Your Box</h2>
+   
+    <div class="grid md:grid-cols-2 gap-10">
+      <!-- Mystery Box -->
+      <div class="box-card bg-gradient-to-br from-purple-900 to-violet-900 rounded-3xl overflow-hidden neon-border">
+        <div class="h-64 bg-gradient-to-br from-pink-500 to-purple-600 flex items-center justify-center text-6xl">❓</div>
+        <div class="p-8">
+          <h3 class="text-3xl font-bold mb-2">Mystery Box</h3>
+          <p class="text-purple-300 mb-6">Full random surprise!</p>
+          <div class="text-4xl font-bold mb-6">$6.99</div>
+          <button onclick="openCheckout('Mystery Box', 6.99)" class="w-full bg-white text-purple-700 font-bold py-4 rounded-2xl hover:bg-purple-200 transition">ORDER NOW</button>
+        </div>
+      </div>
 
-// Assets (Simple positions)
-const player = { x: 100, y: 350 };
-const toilet = { x: 600, y: 350, width: 80, height: 50 };
+      <!-- Guaranteed Rare Box -->
+      <div class="box-card bg-gradient-to-br from-amber-900 to-yellow-900 rounded-3xl overflow-hidden neon-border">
+        <div class="h-64 bg-gradient-to-br from-yellow-400 to-orange-500 flex items-center justify-center text-6xl">⭐</div>
+        <div class="p-8">
+          <h3 class="text-3xl font-bold mb-2">Guaranteed Rare Box</h3>
+          <p class="text-amber-300 mb-6">100% guaranteed at least one Rare item!</p>
+          <div class="text-4xl font-bold mb-6">$8.99</div>
+          <button onclick="openCheckout('Guaranteed Rare Box', 8.99)" class="w-full bg-white text-amber-700 font-bold py-4 rounded-2xl hover:bg-amber-200 transition">ORDER NOW</button>
+        </div>
+      </div>
+    </div>
+  </section>
 
-const momQuotes = [
-    "I JUST MOPPED THAT!",
-    "GET THE BLEACH!",
-    "ARE YOU AN ANIMAL?!",
-    "THAT'S IT, YOU'RE GROUNDED!",
-    "WHO RAISED YOU?!"
-];
+  <!-- What's Inside Section -->
+  <section class="max-w-4xl mx-auto px-6 py-16 bg-black/30 rounded-3xl mx-6">
+    <h2 class="text-4xl font-bold text-center mb-10 glow">What You Might Get</h2>
+    <!-- (kept same as before) -->
+    <div class="grid md:grid-cols-2 gap-8">
+      <div>
+        <h3 class="text-2xl font-bold mb-6 text-purple-400">Mystery Box Chances</h3>
+        <ul class="space-y-4 text-lg">
+          <li class="flex justify-between bg-white/10 p-4 rounded-2xl"><span>Common Item</span><span class="text-green-400 font-bold">100%</span></li>
+          <li class="flex justify-between bg-white/10 p-4 rounded-2xl"><span>Rare Item</span><span class="text-blue-400 font-bold">25%</span></li>
+          <li class="flex justify-between bg-white/10 p-4 rounded-2xl"><span>Epic Item 🔥</span><span class="text-purple-400 font-bold">8%</span></li>
+          <li class="flex justify-between bg-white/10 p-4 rounded-2xl"><span>Legendary Item ✨</span><span class="text-yellow-400 font-bold">2%</span></li>
+        </ul>
+      </div>
+      <div>
+        <h3 class="text-2xl font-bold mb-6 text-amber-400">Guaranteed Rare Box Chances</h3>
+        <ul class="space-y-4 text-lg">
+          <li class="flex justify-between bg-white/10 p-4 rounded-2xl"><span>Rare Item (Guaranteed)</span><span class="text-amber-400 font-bold">100%</span></li>
+          <li class="flex justify-between bg-white/10 p-4 rounded-2xl"><span>Epic Item</span><span class="text-purple-400 font-bold">40%</span></li>
+          <li class="flex justify-between bg-white/10 p-4 rounded-2xl"><span>Legendary Item</span><span class="text-yellow-400 font-bold">10%</span></li>
+        </ul>
+      </div>
+    </div>
+    <p class="text-center mt-10 text-sm text-gray-400">
+      Items include: Stickers, squishies, drawings, pipe cleaner craft, fidget, clay model, pokemon card (holo or better), sticky note, candy/chips, pens, pencils, erasers, and more!
+    </p>
+  </section>
 
-function resetProjectile() {
-    projectile = null;
-    charge = 0;
-}
+  <!-- Checkout Modal -->
+  <div id="checkoutModal" class="hidden fixed inset-0 bg-black/80 flex items-center justify-center z-50">
+    <div class="bg-gradient-to-br from-purple-900 to-violet-900 rounded-3xl p-8 max-w-md w-full mx-4">
+      <h2 class="text-3xl font-bold mb-6 text-center">Checkout - <span id="modalBoxName"></span></h2>
+     
+      <form id="orderForm" onsubmit="submitOrder(event)">
+        <input type="hidden" id="boxType" value="">
+        <input type="hidden" id="originalPrice" value="">
 
-function checkCollision() {
-    if (!projectile) return;
+        <div class="space-y-4">
+          <div>
+            <label class="block text-sm mb-1">Your Name</label>
+            <input type="text" id="customerName" required class="w-full bg-white/10 border border-purple-400 rounded-2xl px-4 py-3 focus:outline-none">
+          </div>
+          <div>
+            <label class="block text-sm mb-1">Email / Phone</label>
+            <input type="text" id="contact" required placeholder="e.g. 412-555-1234" class="w-full bg-white/10 border border-purple-400 rounded-2xl px-4 py-3 focus:outline-none">
+          </div>
+          <div>
+            <label class="block text-sm mb-1">Kid's Name</label>
+            <input type="text" id="kidName" required class="w-full bg-white/10 border border-purple-400 rounded-2xl px-4 py-3 focus:outline-none">
+          </div>
+          <div>
+            <label class="block text-sm mb-1">Theme</label>
+            <input type="text" id="theme" placeholder="e.g. Roblox, Unicorn, Fortnite" class="w-full bg-white/10 border border-purple-400 rounded-2xl px-4 py-3 focus:outline-none">
+          </div>
 
-    // Check if hit the toilet bowl
-    if (projectile.y >= toilet.y && 
-        projectile.x > toilet.x && 
-        projectile.x < toilet.x + toilet.width) {
-        
-        score += 100;
-        level++;
-        document.getElementById('score').innerText = score;
-        document.getElementById('lvl').innerText = level;
-        momBox.innerText = "Nice shot... for once.";
-        
-        // Make it harder: move the toilet or shrink it
-        toilet.x = 400 + Math.random() * 300;
-        toilet.width = Math.max(30, 80 - (level * 5)); 
-        resetProjectile();
-    } 
-    // Check if hit the floor (Miss)
-    else if (projectile.y > canvas.height) {
-        momBox.innerText = "MOM: " + momQuotes[Math.floor(Math.random() * momQuotes.length)];
-        resetProjectile();
+          <!-- Birthday / Holiday -->
+          <div>
+            <label class="block text-sm mb-2">Special Occasion?</label>
+            <div class="flex gap-6">
+              <label class="flex items-center gap-2 cursor-pointer">
+                <input type="checkbox" id="birthday" class="w-5 h-5 accent-purple-500">
+                <span>🎂 Birthday</span>
+              </label>
+              <label class="flex items-center gap-2 cursor-pointer">
+                <input type="checkbox" id="holiday" class="w-5 h-5 accent-purple-500">
+                <span>🎄 Holiday</span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Easy Discount System -->
+          <div>
+            <label class="block text-sm mb-1">Promo Code (Optional)</label>
+            <div class="flex gap-2">
+              <input type="text" id="promoCode" placeholder="Enter code" 
+                     class="flex-1 bg-white/10 border border-purple-400 rounded-2xl px-4 py-3 focus:outline-none uppercase">
+              <button type="button" onclick="applyPromo()" 
+                      class="bg-purple-600 hover:bg-purple-500 px-6 rounded-2xl font-bold">Apply</button>
+            </div>
+            <p id="discountMessage" class="text-green-400 text-sm mt-2 hidden"></p>
+          </div>
+
+          <div>
+            <label class="block text-sm mb-1">Special Instructions</label>
+            <textarea id="instructions" rows="2" class="w-full bg-white/10 border border-purple-400 rounded-2xl px-4 py-3 focus:outline-none"></textarea>
+          </div>
+        </div>
+
+        <div class="mt-6 p-4 bg-black/30 rounded-2xl">
+          <div class="flex justify-between text-lg">
+            <span>Original Price:</span>
+            <span id="originalPriceDisplay">$00</span>
+          </div>
+          <div class="flex justify-between text-xl font-bold mt-2">
+            <span>Final Price:</span>
+            <span id="finalPriceDisplay">$00</span>
+          </div>
+        </div>
+
+        <div class="mt-8 flex gap-4">
+          <button type="button" onclick="closeModal()" class="flex-1 py-4 bg-gray-700 hover:bg-gray-600 rounded-2xl font-bold">Cancel</button>
+          <button type="submit" class="flex-1 py-4 bg-white text-purple-700 hover:bg-purple-200 rounded-2xl font-bold">Place Order</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="text-center py-12 text-purple-300">
+    <p class="text-xl mb-2">Made with ❤️ by SupaSuprise</p>
+    <p class="text-sm">Custom mystery loot boxes</p>
+    <p class="mt-6 text-xs">2026 SupaSuprise</p>
+  </footer>
+
+  <script>
+    let currentPrice = 0;
+
+    function openCheckout(boxName, price) {
+      currentPrice = price;
+      document.getElementById('modalBoxName').textContent = boxName;
+      document.getElementById('boxType').value = boxName;
+      document.getElementById('originalPrice').value = price;
+      document.getElementById('originalPriceDisplay').textContent = '$' + price;
+      document.getElementById('finalPriceDisplay').textContent = '$' + price;
+      document.getElementById('checkoutModal').classList.remove('hidden');
+      document.getElementById('discountMessage').classList.add('hidden');
+      document.getElementById('promoCode').value = '';
     }
-}
 
-function update() {
-    if (isCharging) {
-        charge = Math.min(charge + 0.2, 15); // Power cap
+    function closeModal() {
+      document.getElementById('checkoutModal').classList.add('hidden');
     }
 
-    if (projectile) {
-        projectile.x += projectile.vx;
-        projectile.y += projectile.vy;
-        projectile.vy += gravity;
-        checkCollision();
+    function applyPromo() {
+      const code = document.getElementById('promoCode').value.trim().toUpperCase();
+      const message = document.getElementById('discountMessage');
+      let discountedPrice = currentPrice;
+
+      if (code === "SUPA10" || code === "10OFF") {
+        discountedPrice = Math.round(currentPrice * 0.9);
+        message.textContent = "✅ 10% OFF applied!";
+      } else if (code === "SUPA5" || code === "FIVE") {
+        discountedPrice = currentPrice - 5;
+        message.textContent = "✅ $5 OFF applied!";
+      } else if (code === "FIRST") {
+        discountedPrice = Math.round(currentPrice * 0.85);
+        message.textContent = "✅ First Order 15% OFF!";
+      } else {
+        message.textContent = "❌ Invalid code";
+        message.classList.remove('text-green-400');
+        message.classList.add('text-red-400');
+        return;
+      }
+
+      message.classList.remove('hidden', 'text-red-400');
+      message.classList.add('text-green-400');
+      document.getElementById('finalPriceDisplay').textContent = '$' + discountedPrice;
     }
 
-    draw();
-    requestAnimationFrame(update);
-}
+    async function submitOrder(e) {
+      e.preventDefault();
 
-function draw() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+      const webhookURL = "https://discord.com/api/webhooks/1505278710671085799/xJSl1QXaM-HUmeqzFVzWkqbq2jS1egZP8mR68M7Mq6yq3VBK3lzF11xDIluvhZPE7EMI"; // ← CHANGE THIS
+      const finalPrice = document.getElementById('finalPriceDisplay').textContent.replace('$', '');
 
-    // Draw Floor
-    ctx.fillStyle = "#999";
-    ctx.fillRect(0, 380, canvas.width, 20);
+      const isBirthday = document.getElementById('birthday').checked ? "🎂 Yes" : "No";
+      const isHoliday = document.getElementById('holiday').checked ? "🎄 Yes" : "No";
 
-    // Draw Toilet (Target)
-    ctx.fillStyle = "white";
-    ctx.fillRect(toilet.x, toilet.y, toilet.width, toilet.height);
-    ctx.fillStyle = "#add8e6"; // Water
-    ctx.fillRect(toilet.x + 5, toilet.y + 5, toilet.width - 10, 10);
+      const data = {
+        content: "**🛒 New SupaSuprise Order!**",
+        embeds: [{
+          title: document.getElementById('boxType').value,
+          color: 0xA855F7,
+          fields: [
+            { name: "Customer", value: document.getElementById('customerName').value, inline: true },
+            { name: "Contact", value: document.getElementById('contact').value, inline: true },
+            { name: "Kid's Name", value: document.getElementById('kidName').value, inline: true },
+            { name: "Theme", value: document.getElementById('theme').value || "Not specified", inline: true },
+            { name: "Birthday", value: isBirthday, inline: true },
+            { name: "Holiday", value: isHoliday, inline: true },
+            { name: "Promo Code", value: document.getElementById('promoCode').value || "None", inline: true },
+            { name: "Original Price", value: "$" + document.getElementById('originalPrice').value, inline: true },
+            { name: "Final Price", value: "$" + finalPrice, inline: true },
+            { name: "Instructions", value: document.getElementById('instructions').value || "None" }
+          ],
+          timestamp: new Date().toISOString()
+        }]
+      };
 
-    // Draw Player (The Source)
-    ctx.fillStyle = "#8b4513";
-    ctx.fillRect(player.x - 10, player.y - 10, 20, 20);
-
-    // Draw Projectile
-    if (projectile) {
-        ctx.beginPath();
-        ctx.arc(projectile.x, projectile.y, 8, 0, Math.PI * 2);
-        ctx.fillStyle = "#5c3317";
-        ctx.fill();
-        ctx.closePath();
+      try {
+        await fetch(webhookURL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(data)
+        });
+        alert("✅ Order Sent! We'll contact you soon 😎");
+        closeModal();
+        document.getElementById('orderForm').reset();
+      } catch (err) {
+        alert("Order received! (Webhook not connected yet)");
+        console.log("Order Data:", data);
+      }
     }
-
-    // Draw Power Bar
-    if (isCharging) {
-        ctx.fillStyle = "red";
-        ctx.fillRect(player.x - 20, player.y - 40, charge * 5, 10);
-    }
-}
-
-// Controls
-window.addEventListener('mousedown', () => { if (!projectile) isCharging = true; });
-window.addEventListener('mouseup', () => {
-    if (isCharging) {
-        isCharging = false;
-        projectile = {
-            x: player.x,
-            y: player.y,
-            vx: charge * 1.5,
-            vy: -charge * 1.2
-        };
-    }
-});
-
-update();
-</script>
+  </script>
 </body>
 </html>
